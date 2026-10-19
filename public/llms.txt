@@ -1,0 +1,26 @@
+# Medicine Visual Story
+
+> An interactive, aggregate and anonymised visual exploration of community medicine redistribution and Pharma company donation records.
+
+## Main page
+
+- [Medicine Visual Story](/): Interactive two-stream dashboard, findings, methodology and visualization galleries.
+
+## Downloads
+
+- [All visualization PNGs](/medicine-visualizations.zip): Download the complete chart archive.
+- [Pharma visualization PNGs](/pharma-visualizations.zip): Download the Pharma company chart archive.
+
+## Topics
+
+- Donation activity over time.
+- Medicine frequency, quantity and recorded value.
+- Donor and receiver diagnosis distributions.
+- Shelf-life and expiry analysis.
+- Pazopanib and Votrient brand comparisons.
+- Data-quality indicators.
+- Pharma company concentration, medicine allocation and quantity-unit analysis.
+
+## Usage
+
+The website presents descriptive programme data. It does not provide medical advice or clinical treatment recommendations.
