@@ -1,6 +1,8 @@
-# Medicine Visual Story
+# Project Efficiency
 
-Responsive Vite/React website presenting two connected medicine-donation datasets:
+**Project Efficiency** is an initiative by **Sachin Sarcoma Society**.
+
+This responsive Vite/React dashboard presents two connected medicine-donation datasets:
 
 - 27 community medicine redistribution visualizations
 - 27 Pharma company donation visualizations

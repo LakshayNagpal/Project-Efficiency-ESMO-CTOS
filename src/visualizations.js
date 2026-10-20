@@ -147,9 +147,9 @@ export const visualizations = [
     title: "Shelf-life distribution",
     category: "Shelf Life",
     tags: ["expiry", "shelf life", "distribution"],
-    takeaway: "The median medicine had 164 days remaining before expiry.",
+    takeaway: "The median medicine had 165 days remaining before expiry.",
     interpretation:
-      "Shelf life ranges from 76 to 464 days. Most donations had between three and twelve months remaining. Only a minority fell within the highlighted 90-day window.",
+      "Shelf life ranges from 76 to 464 days, with a median of 165 days. Most donations had between three and twelve months remaining. Only a minority fell within the highlighted 90-day window.",
   },
   {
     id: 16,
@@ -292,7 +292,7 @@ export const keyMetrics = [
   { value: "339", label: "donation records" },
   { value: "43", label: "medicine labels" },
   { value: "₹4.59m", label: "recorded value" },
-  { value: "164", label: "median shelf-life days" },
+  { value: "165", label: "median shelf-life days" },
 ];
 
 export const insights = [

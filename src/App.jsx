@@ -14,11 +14,31 @@ import {
 
 const Icon = ({ name, size = 20 }) => {
   const paths = {
-    arrow: <path d="m9 18 6-6-6-6" />,
-    close: (
+    chart: (
       <>
-        <path d="M18 6 6 18" />
-        <path d="m6 6 12 12" />
+        <path d="M3 3v18h18" />
+        <path d="m7 16 4-5 4 3 5-7" />
+      </>
+    ),
+    people: (
+      <>
+        <circle cx="9" cy="7" r="4" />
+        <path d="M3 21v-2a6 6 0 0 1 12 0v2" />
+        <path d="M16 3.2a4 4 0 0 1 0 7.6" />
+        <path d="M18 15a6 6 0 0 1 3 5.2V21" />
+      </>
+    ),
+    building: (
+      <>
+        <path d="M3 21h18" />
+        <path d="M6 21V7l6-4 6 4v14" />
+        <path d="M9 10h.01M15 10h.01M9 14h.01M15 14h.01" />
+      </>
+    ),
+    search: (
+      <>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
       </>
     ),
     download: (
@@ -30,42 +50,21 @@ const Icon = ({ name, size = 20 }) => {
     ),
     expand: (
       <>
-        <path d="M8 3H3v5" />
-        <path d="M16 3h5v5" />
-        <path d="M8 21H3v-5" />
-        <path d="M16 21h5v-5" />
+        <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" />
       </>
     ),
-    search: (
+    close: (
       <>
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.3-4.3" />
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
       </>
     ),
-    chevronLeft: <path d="m15 18-6-6 6-6" />,
-    chevronRight: <path d="m9 18 6-6-6-6" />,
-    chart: (
+    left: <path d="m15 18-6-6 6-6" />,
+    right: <path d="m9 18 6-6-6-6" />,
+    info: (
       <>
-        <path d="M3 3v18h18" />
-        <path d="m7 16 4-5 4 3 5-7" />
-      </>
-    ),
-    building: (
-      <>
-        <path d="M3 21h18" />
-        <path d="M6 21V7l6-4 6 4v14" />
-        <path d="M9 10h.01" />
-        <path d="M15 10h.01" />
-        <path d="M9 14h.01" />
-        <path d="M15 14h.01" />
-      </>
-    ),
-    people: (
-      <>
-        <circle cx="9" cy="7" r="4" />
-        <path d="M3 21v-2a6 6 0 0 1 12 0v2" />
-        <path d="M16 3.2a4 4 0 0 1 0 7.6" />
-        <path d="M18 15a6 6 0 0 1 3 5.2V21" />
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v5M12 8h.01" />
       </>
     ),
   };
@@ -86,68 +85,56 @@ const Icon = ({ name, size = 20 }) => {
   );
 };
 
-const trackConfig = {
+const datasets = {
   community: {
-    kicker: "Community medicine redistribution",
-    title: "Patient-linked donations",
-    description:
-      "Medicine donations redistributed across patients and diagnoses, with a focus on value, shelf life, brands and diagnosis flows.",
+    short: "Community",
+    title: "Community medicine donations",
+    subtitle:
+      "Patient-linked medicine redistribution, value, diagnosis flows and shelf life.",
+    icon: "people",
     records: "339 records",
     visualizations: communityVisualizations,
     categories: communityCategories,
     metrics: communityMetrics,
     insights: communityInsights,
-    featuredId: 26,
     download: "/medicine-visualizations.zip",
-    icon: "people",
+    period: "July 2021–May 2026",
   },
   pharma: {
-    kicker: "Pharma company extension",
-    title: "Company-supported donations",
-    description:
-      "A complementary view of company contributions, medicine allocation, receiver diagnoses, quantity units and short shelf-life operations.",
+    short: "Pharma",
+    title: "Pharma company donations",
+    subtitle:
+      "Company contributions, medicine allocation, receiver diagnoses and expiry operations.",
+    icon: "building",
     records: "203 records",
     visualizations: pharmaVisualizations,
     categories: pharmaCategories,
     metrics: pharmaMetrics,
     insights: pharmaInsights,
-    featuredId: 23,
     download: "/pharma-visualizations.zip",
-    icon: "building",
+    period: "December 2023–August 2026",
   },
 };
 
 function App() {
-  const [track, setTrack] = useState("community");
+  const [dataset, setDataset] = useState("community");
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [scrolled, setScrolled] = useState(false);
 
-  const current = trackConfig[track];
-  const activeVisualizations = current.visualizations;
-  const activeCategories = current.categories;
-  const featured = activeVisualizations.find(
-    (item) => item.id === current.featuredId,
-  );
+  const current = datasets[dataset];
 
-  const selectTrack = (nextTrack, shouldScroll = true) => {
-    setTrack(nextTrack);
+  const changeDataset = (next) => {
+    setDataset(next);
     setCategory("All");
     setQuery("");
     setSelectedId(null);
-    if (shouldScroll) {
-      requestAnimationFrame(() => {
-        document
-          .getElementById("insights")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return activeVisualizations.filter((item) => {
+    return current.visualizations.filter((item) => {
       const matchesCategory =
         category === "All" ||
         item.category === category ||
@@ -156,40 +143,36 @@ function App() {
         !needle ||
         item.title.toLowerCase().includes(needle) ||
         item.takeaway.toLowerCase().includes(needle) ||
+        item.interpretation.toLowerCase().includes(needle) ||
         item.tags.some((tag) => tag.includes(needle));
       return matchesCategory && matchesQuery;
     });
-  }, [activeVisualizations, category, query]);
+  }, [category, current.visualizations, query]);
 
   const selectedIndex = selectedId
-    ? activeVisualizations.findIndex((item) => item.id === selectedId)
+    ? current.visualizations.findIndex((item) => item.id === selectedId)
     : -1;
   const selected =
-    selectedIndex >= 0 ? activeVisualizations[selectedIndex] : null;
+    selectedIndex >= 0 ? current.visualizations[selectedIndex] : null;
 
   const moveModal = (direction) => {
     if (selectedIndex < 0) return;
     const next =
-      (selectedIndex + direction + activeVisualizations.length) %
-      activeVisualizations.length;
-    setSelectedId(activeVisualizations[next].id);
+      (selectedIndex + direction + current.visualizations.length) %
+      current.visualizations.length;
+    setSelectedId(current.visualizations[next].id);
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    const onKey = (event) => {
-      if (!selectedId) return;
+    const handleKey = (event) => {
+      if (!selected) return;
       if (event.key === "Escape") setSelectedId(null);
-      if (event.key === "ArrowRight") moveModal(1);
       if (event.key === "ArrowLeft") moveModal(-1);
+      if (event.key === "ArrowRight") moveModal(1);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [selectedId, selectedIndex, track]);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selected, selectedIndex, dataset]);
 
   useEffect(() => {
     document.body.style.overflow = selected ? "hidden" : "";
@@ -199,292 +182,161 @@ function App() {
   }, [selected]);
 
   return (
-    <div className="site-shell">
-      <header className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
-        <a className="brand" href="#top" aria-label="Medicine visual story home">
-          <span className="brand__mark">
+    <div className="dashboard">
+      <aside className="sidebar">
+        <div className="sidebar__brand">
+          <span>
             <Icon name="chart" size={19} />
           </span>
-          <span>
-            Medicine <strong>Visual Story</strong>
-          </span>
-        </a>
-        <nav className="nav__links" aria-label="Main navigation">
-          <a href="#streams">Streams</a>
-          <a href="#insights">Insights</a>
-          <a href="#gallery">Visualizations</a>
-          <a href="#method">Method</a>
-        </nav>
-        <a
-          className="button button--small button--ghost"
-          href={current.download}
-          download
-        >
-          <Icon name="download" size={17} />
-          Download {track === "community" ? "community" : "Pharma"} charts
-        </a>
-      </header>
-
-      <main id="top">
-        <section className="hero">
-          <div className="hero__glow hero__glow--one" />
-          <div className="hero__glow hero__glow--two" />
-          <div className="hero__grid" />
-          <div className="hero__content">
-            <p className="eyebrow">
-              <span />
-              Medicine access, seen from both sides
-            </p>
-            <h1>
-              Two donation streams.
-              <br />
-              <em>One visual story.</em>
-            </h1>
-            <p className="hero__lede">
-              Explore community-linked medicine redistribution and the Pharma
-              company donation extension through 54 high-resolution,
-              interpretation-led visualizations.
-            </p>
-            <div className="hero__actions">
-              <a className="button button--primary" href="#streams">
-                Choose a data stream
-                <Icon name="arrow" size={18} />
-              </a>
-              <a className="text-link" href="#method">
-                Read the methodology
-              </a>
-            </div>
+          <div>
+            <strong>Project Efficiency</strong>
+            <small>Sachin Sarcoma Society</small>
           </div>
+        </div>
 
-          <div className="hero__metrics" aria-label="Project metrics">
-            {[
-              { value: "542", label: "combined donation records" },
-              { value: "2", label: "donation streams" },
-              { value: "54", label: "interactive visualizations" },
-              { value: "5+", label: "years of activity" },
-            ].map((metric) => (
-              <div className="metric" key={metric.label}>
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="ticker" aria-hidden="true">
-          <div className="ticker__track">
-            {[...activeVisualizations.slice(0, 10), ...activeVisualizations.slice(0, 10)].map(
-              (item, index) => (
-                <span key={`${track}-${item.id}-${index}`}>
-                  {String(item.id).padStart(2, "0")} · {item.title}
-                  <i />
-                </span>
-              ),
-            )}
-          </div>
-        </section>
-
-        <section className="streams section" id="streams">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">The project now has two connected views</p>
-              <h2>Choose the donation stream you want to explore.</h2>
-            </div>
-            <p>
-              The two datasets share a common purpose but capture different
-              operational models. Switching streams updates the findings,
-              featured chart, gallery, filters and downloads.
-            </p>
-          </div>
-          <div className="stream-grid">
-            {Object.entries(trackConfig).map(([key, item]) => (
+        <div className="sidebar__section">
+          <label>Data stream</label>
+          <div className="dataset-buttons">
+            {Object.entries(datasets).map(([key, item]) => (
               <button
-                className={`stream-card ${track === key ? "is-active" : ""}`}
                 key={key}
-                onClick={() => selectTrack(key)}
+                className={dataset === key ? "is-active" : ""}
+                onClick={() => changeDataset(key)}
               >
-                <div className="stream-card__icon">
-                  <Icon name={item.icon} size={24} />
-                </div>
-                <span>{item.kicker}</span>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-                <footer>
-                  <strong>{item.records}</strong>
-                  <span>27 charts</span>
-                  <i>
-                    Explore
-                    <Icon name="arrow" size={16} />
-                  </i>
-                </footer>
+                <Icon name={item.icon} size={18} />
+                <span>
+                  <strong>{item.short}</strong>
+                  <small>{item.records}</small>
+                </span>
               </button>
             ))}
           </div>
-        </section>
+        </div>
 
-        <section className="section dataset-summary" id="insights">
-          <div className="dataset-banner">
-            <div className="dataset-banner__icon">
-              <Icon name={current.icon} size={27} />
-            </div>
-            <div>
-              <span>{current.kicker}</span>
-              <h2>{current.title}</h2>
-            </div>
-            <p>{current.description}</p>
-          </div>
-
-          <div className="track-metrics">
-            {current.metrics.map((metric) => (
-              <div key={metric.label}>
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
-              </div>
+        <div className="sidebar__section sidebar__categories">
+          <label>Categories</label>
+          <div>
+            {current.categories.map((item) => (
+              <button
+                key={item}
+                className={category === item ? "is-active" : ""}
+                onClick={() => setCategory(item)}
+              >
+                <span>{item}</span>
+                {item === "All" && <small>{current.visualizations.length}</small>}
+              </button>
             ))}
           </div>
+        </div>
 
-          <div className="section-heading insights-heading">
-            <div>
-              <p className="eyebrow">What this stream says</p>
-              <h2>Six findings worth carrying forward.</h2>
-            </div>
-            <p>
-              These are descriptive programme findings. They explain how the
-              donation stream operates, where value concentrates and which
-              data-quality considerations matter.
-            </p>
+        <div className="sidebar__note">
+          <Icon name="info" size={18} />
+          <p>
+            Descriptive line-item analysis. Quantities use mixed units and
+            should not be read as standardised doses.
+          </p>
+        </div>
+
+        <a className="sidebar__download" href={current.download} download>
+          <Icon name="download" size={17} />
+          Download all PNGs
+        </a>
+      </aside>
+
+      <main className="dashboard-main">
+        <header className="dashboard-header">
+          <div>
+            <p>Sachin Sarcoma Society · {current.short} stream</p>
+            <h1>{current.title}</h1>
+            <span>{current.subtitle}</span>
           </div>
-          <div className="insights-grid">
-            {current.insights.map((insight) => (
-              <article className="insight-card" key={insight.number}>
-                <span>{insight.number}</span>
-                <h3>{insight.title}</h3>
+          <div className="dashboard-header__meta">
+            <strong>{current.period}</strong>
+            <span>Last updated · 20 Oct 2026</span>
+          </div>
+        </header>
+
+        <section className="kpi-grid" aria-label="Key metrics">
+          {current.metrics.map((metric, index) => (
+            <article key={metric.label}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{metric.value}</strong>
+              <p>{metric.label}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="insight-strip" aria-label="Key insights">
+          {current.insights.slice(0, 3).map((insight) => (
+            <article key={insight.number}>
+              <span>{insight.number}</span>
+              <div>
+                <strong>{insight.title}</strong>
                 <p>{insight.text}</p>
-              </article>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
         </section>
 
-        <section className={`featured featured--${track}`}>
-          <div className="featured__copy">
-            <p className="eyebrow">Featured comparison</p>
-            <h2>{featured.title}</h2>
-            <p>{featured.interpretation}</p>
-            <button
-              className="button button--primary"
-              onClick={() => setSelectedId(featured.id)}
-            >
-              Open the comparison
-              <Icon name="expand" size={18} />
-            </button>
-          </div>
-          <button
-            className="featured__visual"
-            onClick={() => setSelectedId(featured.id)}
-            aria-label={`Click to examine ${featured.title}`}
-          >
-            <img src={featured.src} alt={featured.title} />
-            <span>Click to examine</span>
-          </button>
-        </section>
-
-        <section className="section gallery-section" id="gallery">
-          <div className="section-heading section-heading--gallery">
+        <section className="visualizations">
+          <div className="visualizations__toolbar">
             <div>
-              <p className="eyebrow">{current.kicker}</p>
-              <h2>{current.title}: the complete visual atlas.</h2>
+              <h2>Visualizations</h2>
+              <p>
+                {filtered.length} of {current.visualizations.length} charts
+              </p>
             </div>
-            <p>
-              Open any chart to view it in high resolution, read a tailored
-              interpretation and download the original PNG.
-            </p>
-          </div>
-
-          <div className="inline-track-toggle" role="group" aria-label="Dataset">
-            <button
-              className={track === "community" ? "is-active" : ""}
-              onClick={() => selectTrack("community", false)}
-            >
-              <Icon name="people" size={17} />
-              Community donations
-            </button>
-            <button
-              className={track === "pharma" ? "is-active" : ""}
-              onClick={() => selectTrack("pharma", false)}
-            >
-              <Icon name="building" size={17} />
-              Pharma donations
-            </button>
-          </div>
-
-          <div className="gallery-tools">
-            <div className="category-pills" role="group" aria-label="Filter charts">
-              {activeCategories.map((item) => (
-                <button
-                  key={item}
-                  className={category === item ? "is-active" : ""}
-                  onClick={() => setCategory(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-            <label className="search">
+            <label className="dashboard-search">
               <Icon name="search" size={18} />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search charts"
+                placeholder="Search charts or findings"
                 aria-label="Search visualizations"
               />
             </label>
           </div>
 
-          <div className="gallery-count">
-            <span>{filtered.length}</span> visualizations
-          </div>
-
-          <div className="gallery-grid">
-            {filtered.map((item, index) => (
-              <article
-                className={`chart-card ${index % 7 === 0 ? "chart-card--wide" : ""}`}
-                key={`${track}-${item.id}`}
-              >
+          <div className="chart-grid">
+            {filtered.map((item) => (
+              <article className="dashboard-card" key={`${dataset}-${item.id}`}>
                 <button
-                  className="chart-card__image"
+                  className="dashboard-card__visual"
                   onClick={() => setSelectedId(item.id)}
                   aria-label={`Open ${item.title}`}
                 >
                   <img src={item.src} alt={item.title} loading="lazy" />
-                  <span className="chart-card__expand">
-                    <Icon name="expand" size={19} />
-                  </span>
+                  <div className="dashboard-card__overlay">
+                    <span>Interpretation</span>
+                    <p>{item.takeaway}</p>
+                    <strong>
+                      Click for details
+                      <Icon name="expand" size={16} />
+                    </strong>
+                  </div>
                 </button>
-                <div className="chart-card__body">
-                  <div className="chart-card__meta">
+                <footer>
+                  <div>
                     <span>{String(item.id).padStart(2, "0")}</span>
-                    <span>{item.category}</span>
+                    <small>{item.category}</small>
                   </div>
                   <h3>{item.title}</h3>
-                  <p>{item.takeaway}</p>
                   <button
-                    className="chart-card__link"
                     onClick={() => setSelectedId(item.id)}
+                    aria-label={`View interpretation for ${item.title}`}
                   >
-                    Read interpretation
-                    <Icon name="arrow" size={16} />
+                    <Icon name="expand" size={18} />
                   </button>
-                </div>
+                </footer>
               </article>
             ))}
           </div>
 
           {!filtered.length && (
-            <div className="empty-state">
-              <h3>No chart found.</h3>
-              <p>Try another search term or reset the category filter.</p>
+            <div className="empty">
+              <strong>No visualizations found</strong>
+              <p>Clear the search or select another category.</p>
               <button
-                className="button button--ghost"
                 onClick={() => {
                   setCategory("All");
                   setQuery("");
@@ -495,148 +347,69 @@ function App() {
             </div>
           )}
         </section>
-
-        <section className="method section" id="method">
-          <div className="method__headline">
-            <p className="eyebrow">How to read the project</p>
-            <h2>Two datasets. Shared standards. Different limitations.</h2>
-          </div>
-          <div className="method__grid">
-            <article>
-              <span>01</span>
-              <h3>Line-item analysis</h3>
-              <p>
-                Each row is a donation line-item. Counts are not unique
-                patients, treatment courses or standardized medicine packs.
-              </p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>Quantity caution</h3>
-              <p>
-                Quantity units include boxes, packs, tablets, vials and
-                fractional packs. Unit-specific context is essential.
-              </p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>Different time windows</h3>
-              <p>
-                Community records span July 2021–August 2026. Pharma records
-                span December 2023–August 2026, with partial boundary years.
-              </p>
-            </article>
-            <article>
-              <span>04</span>
-              <h3>Privacy and interpretation</h3>
-              <p>
-                All charts are aggregate and anonymised. Findings are
-                descriptive and do not provide clinical recommendations.
-              </p>
-            </article>
-          </div>
-        </section>
       </main>
 
-      <footer className="footer">
-        <div>
-          <span className="brand__mark">
-            <Icon name="chart" size={18} />
-          </span>
-          <p>
-            Medicine Visual Story
-            <small>Community and Pharma company donation streams.</small>
-          </p>
-        </div>
-        <p>542 records · 54 visualizations · 2 connected datasets</p>
-      </footer>
-
       {selected && (
-        <div
-          className="modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={selected.title}
-        >
+        <div className="modal" role="dialog" aria-modal="true" aria-label={selected.title}>
           <button
             className="modal__backdrop"
             onClick={() => setSelectedId(null)}
             aria-label="Close visualization"
           />
           <div className="modal__panel">
-            <div className="modal__topbar">
+            <header>
               <div>
                 <span>
                   {String(selected.id).padStart(2, "0")} /{" "}
-                  {activeVisualizations.length}
+                  {current.visualizations.length}
                 </span>
                 <strong>{selected.category}</strong>
-                <em>{current.title}</em>
               </div>
-              <div className="modal__actions">
-                <a
-                  href={selected.src}
-                  download={selected.file}
-                  className="icon-button"
-                  aria-label="Download PNG"
-                  title="Download PNG"
-                >
+              <div>
+                <a href={selected.src} download={selected.file} aria-label="Download PNG">
                   <Icon name="download" />
                 </a>
-                <button
-                  className="icon-button"
-                  onClick={() => setSelectedId(null)}
-                  aria-label="Close"
-                >
+                <button onClick={() => setSelectedId(null)} aria-label="Close">
                   <Icon name="close" />
                 </button>
               </div>
-            </div>
-
+            </header>
             <div className="modal__content">
-              <div className="modal__visual-wrap">
-                <img src={selected.src} alt={selected.title} className="modal__visual" />
+              <div className="modal__image">
+                <img src={selected.src} alt={selected.title} />
               </div>
-              <aside className="modal__story">
-                <p className="eyebrow">{current.kicker}</p>
+              <aside>
+                <span>{current.short} · {selected.category}</span>
                 <h2>{selected.title}</h2>
-                <div className="takeaway">
-                  <span>Key takeaway</span>
+                <div className="modal__takeaway">
+                  <small>Key takeaway</small>
                   <strong>{selected.takeaway}</strong>
                 </div>
                 <p>{selected.interpretation}</p>
-                <div className="tag-list">
+                <div className="modal__tags">
                   {selected.tags.map((tag) => (
                     <span key={tag}>{tag}</span>
                   ))}
                 </div>
-                <a
-                  className="button button--primary button--full"
-                  href={selected.src}
-                  download={selected.file}
-                >
+                <a href={selected.src} download={selected.file}>
                   <Icon name="download" size={18} />
                   Download high-resolution PNG
                 </a>
-                <small>
-                  Use ← and → to navigate. Press Esc to close.
-                </small>
               </aside>
             </div>
-
             <button
               className="modal__nav modal__nav--left"
               onClick={() => moveModal(-1)}
               aria-label="Previous visualization"
             >
-              <Icon name="chevronLeft" size={28} />
+              <Icon name="left" size={27} />
             </button>
             <button
               className="modal__nav modal__nav--right"
               onClick={() => moveModal(1)}
               aria-label="Next visualization"
             >
-              <Icon name="chevronRight" size={28} />
+              <Icon name="right" size={27} />
             </button>
           </div>
         </div>

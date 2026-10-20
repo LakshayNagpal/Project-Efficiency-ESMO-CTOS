@@ -1,10 +1,10 @@
-# Medicine Visual Story
+# Project Efficiency
 
-> An interactive, aggregate and anonymised visual exploration of community medicine redistribution and Pharma company donation records.
+> An initiative by Sachin Sarcoma Society providing an interactive, aggregate and anonymised visual exploration of community medicine redistribution and Pharma company donation records.
 
 ## Main page
 
-- [Medicine Visual Story](/): Interactive two-stream dashboard, findings, methodology and visualization galleries.
+- [Project Efficiency](/): Interactive two-stream dashboard, findings, methodology and visualization galleries.
 
 ## Downloads
 
